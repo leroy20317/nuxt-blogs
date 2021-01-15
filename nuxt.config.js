@@ -27,7 +27,9 @@ export default {
       {
         rel: 'icon',
         type: 'image/x-icon',
-        href: 'https://static.leroy.net.cn/images/icon.ico'
+        href: isProd
+          ? 'https://cdn.leroy.net.cn/images/icon.ico'
+          : 'https://static.leroy.net.cn/images/icon.ico'
       }
     ]
   },
@@ -73,7 +75,9 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     // 当启动nuxt build时， 将.nuxt/dist/client目录的内容上传到您的 CDN 即可！
-    publicPath: 'https://cdn.leroy.net.cn/nuxt-blogs/client',
+    publicPath: process.env.npm_package_name
+      ? `https://cdn.leroy.net.cn/${process.env.npm_package_name}/client`
+      : '',
 
     terser: {
       parallel: true,

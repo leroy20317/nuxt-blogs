@@ -19,26 +19,25 @@ const putExtra = new qiniu.form_up.PutExtra();
 
 // 异步遍历目录下的所有文件
 rd.each(
-  path.join(__dirname, '/.nuxt/dist/client'),
+  path.join(__dirname, '/static'),
   function (f, s, next) {
     putExtra.mimeType = null;
     if (s.isFile()) {
       co(function* () {
         try {
           const result = yield upload(
-            f.replace(path.join(__dirname, '/.nuxt/dist'), folderName),
+            f.replace(path.join(__dirname, '/static'), `${folderName}/static`),
             f
           );
           return result;
         } catch (error) {
           console.log(error);
         }
-        // return result;
       }).then(function () {
         console.log(
-          `上传文件至https://cdn.leroy.net.cn/${f.replace(
-            path.join(__dirname, '/.nuxt/dist'),
-            folderName
+          `上传文件至https://cdn.leroy.net.cn${f.replace(
+            path.join(__dirname, '/static'),
+            `${folderName}/static`
           )}成功`
         );
       });
