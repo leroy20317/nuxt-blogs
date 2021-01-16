@@ -1,8 +1,5 @@
 const isProd = process.env.NODE_ENV === 'production';
 
-const BASE_URL = 'https://www.leroy.net.cn';
-// const BASE_URL = 'http://localhost:5001'
-
 export default {
   mode: 'universal',
   head: {
@@ -38,7 +35,7 @@ export default {
     host: isProd ? '0.0.0.0' : 'localhost'
   },
   env: {
-    baseUrl: `${BASE_URL}/web`
+    baseUrl: `${isProd ? 'https://api.leroy.net.cn' : 'http://localhost:5001'}/web`
   },
 
   loading: '~/components/loadingTab.vue',
