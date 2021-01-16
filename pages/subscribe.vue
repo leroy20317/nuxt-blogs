@@ -1,8 +1,11 @@
 <template>
   <div class="container">
-    <header v-if="refresh" :music="music" title="嘿，你今天笑了么(≖ᴗ≖)✧"></header>
+    <nuxt-header v-if="refresh" :music="music" title="嘿，你今天笑了么(≖ᴗ≖)✧" />
 
-    <div class="content" :style="`background: url(${staticHost}image/other/subscribe.png) no-repeat bottom right`">
+    <div
+      class="content"
+      :style="`background: url(${staticHost}image/other/subscribe.png) no-repeat bottom right`"
+    >
       <h1>[一日之计在于晨]</h1>
       <div class="main">
         <template v-if="status === 1">

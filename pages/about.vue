@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <header v-if="refresh" :music="music" title="你好呀，陌生人！"></header>
+    <nuxt-header v-if="refresh" :music="music" title="你好呀，陌生人！" />
     <client-only>
       <mavon-editor code-style="monokai-sublime" v-html="data.contentHtml" />
     </client-only>

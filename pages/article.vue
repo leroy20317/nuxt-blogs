@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <header v-if="refresh" :music="music" title="加油啦"></header>
+    <nuxt-header v-if="refresh" :music="music" title="加油啦" />
     <section class="list">
       <div v-if="Object.keys(data.data).length <= 0" class="year-list">
         空无一物，就像你我一样。

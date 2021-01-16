@@ -3,7 +3,7 @@
     <!-- Article Progress -->
     <div :style="{ width: postProgress }" class="scrollbar"></div>
 
-    <header :like="data._id" :music="data.music.url" :title="data.title" @liked="liked"></header>
+    <nuxt-header :like="data._id" :music="data.music.url" :title="data.title" @liked="liked" />
 
     <section>
       <h1 class="title">{{ data.title }}</h1>
