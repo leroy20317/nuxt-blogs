@@ -38,7 +38,7 @@ export default {
     host: isProd ? '0.0.0.0' : 'localhost'
   },
   env: {
-    baseUrl: `${BASE_URL}/web/api`
+    baseUrl: `${BASE_URL}/web`
   },
 
   loading: '~/components/loadingTab.vue',
