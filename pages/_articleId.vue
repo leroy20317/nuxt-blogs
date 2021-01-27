@@ -68,7 +68,7 @@ export default {
   },
   head() {
     return {
-      title: `${this.data.title}`
+      title: `${this.data.title} | ${this.info.web.name}`
     };
   },
   computed: {
