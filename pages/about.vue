@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       title: false,
-      music: 'https://static.leroy.net.cn/music/shenyeshudian.mp3',
+      music: 'https://cdn.leroy.net.cn/music/shenyeshudian.mp3',
       refresh: true
     };
   },

@@ -48,7 +48,7 @@ export default {
     return {
       staticHost: Url.staticHost,
       newData: '',
-      music: 'https://static.leroy.net.cn/music/shunjiandeyongheng.mp3',
+      music: 'https://cdn.leroy.net.cn/music/light-song/tiankongzhicheng.mp3',
       enMon: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
       loadingType: 'more',
       refresh: true

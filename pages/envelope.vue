@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      music: 'https://image.raindays.cn/Myself-Resources/music/jingxin.mp3',
+      music: 'https://cdn.leroy.net.cn/music/light-song/shunjiandeyongheng.mp3',
       refresh: true,
       loadingType: 'more'
     };
