@@ -21,7 +21,7 @@
                     <span>{{ child_val.like }} LIKE / {{ child_val.read }} READ</span>
                   </div>
                 </div>
-                <span class="item-r">{{ child_val.time.day.en }}</span>
+                <span class="item-r">{{ day(child_val.time) }}</span>
               </li>
             </ul>
           </ul>
@@ -34,13 +34,15 @@
 
 <script>
 import Url from '~/utils/url';
+import { dateFormat } from '~/utils/util';
 
 export default {
   async asyncData(context) {
     const { data } = await context.$axios.get(Url.article, {
       params: { from: 'list' }
     });
-    return { data: data.status === 1 ? data.body : {} };
+    console.log('data', data);
+    return { data: data.status === 'success' ? data.body : {} };
   },
   data() {
     return {
@@ -54,7 +56,7 @@ export default {
   },
   head() {
     return {
-      title: `Article | ${this.info.web_name}`
+      title: `Article | ${this.info.web.name}`
     };
   },
   computed: {
@@ -64,8 +66,8 @@ export default {
   },
   mounted() {
     // 背景音乐
-    if (this.info.bg.bg_mood) {
-      this.music = this.info.bg.bg_mood;
+    if (this.info.bg_music.mood) {
+      this.music = this.info.bg_music.mood;
       this.refresh = false;
       this.$nextTick(() => (this.refresh = true));
     }
@@ -128,6 +130,9 @@ export default {
     },
     viewArticle(id) {
       this.$router.push(`/${id}`);
+    },
+    day(date) {
+      return dateFormat(date).day.en;
     }
   }
 };

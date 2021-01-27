@@ -69,27 +69,13 @@
 </template>
 
 <script>
-import Url from '~/utils/url';
+// import Url from '~/utils/url';
 
 export default {
   name: 'Subscribe',
   beforeRouteUpdate(_, __, next) {
     this.status = 0;
     next();
-  },
-  async asyncData(context) {
-    // 是否开启订阅通知功能
-    if (context.store.state.data.email_subscribe) {
-      const data = context.query;
-      if (Object.keys(data).length > 1) {
-        const result = await context.$axios.post(Url.subscribe_result, data);
-        return { status: result.data.status };
-      } else {
-        return { status: 0 };
-      }
-    } else {
-      context.error({ statusCode: 404, message: '页面未找到或无数据' });
-    }
   },
   data() {
     return {
@@ -104,7 +90,7 @@ export default {
   },
   head() {
     return {
-      title: `Subscribe | ${this.info.web_name}`
+      title: `Subscribe | ${this.info.web.name}`
     };
   },
   computed: {
@@ -114,8 +100,8 @@ export default {
   },
   mounted() {
     // 背景音乐
-    if (this.info.bg.bg_subscribe) {
-      this.music = this.info.bg.bg_subscribe;
+    if (this.info.bg_music.subscribe) {
+      this.music = this.info.bg_music.subscribe;
       this.refresh = false;
       this.$nextTick(() => (this.refresh = true));
     }
@@ -141,21 +127,22 @@ export default {
         time: new Date().setDate(new Date().getDate() + 1),
         active: false
       };
-      this.$axios.post(Url.subscribe, data).then(res => {
-        if (res.data.status === 1) {
-          this.count = 60;
-          this.time = setInterval(() => {
-            this.count--;
-            if (!this.count) clearInterval(this.time);
-          }, 1000);
-          this.text = `${this.email}，已添加成功，请到邮箱内进行激活！！`;
-        } else {
-          this.text = `${this.email}，邮箱已添加，请勿重复操作！！`;
-        }
-        this.hint = true;
-        this.email = '';
-        this.loading = false;
-      });
+      console.log('data', data);
+      // this.$axios.post(Url.subscribe, data).then(res => {
+      //   if (res.data.status === 1) {
+      //     this.count = 60;
+      //     this.time = setInterval(() => {
+      //       this.count--;
+      //       if (!this.count) clearInterval(this.time);
+      //     }, 1000);
+      //     this.text = `${this.email}，已添加成功，请到邮箱内进行激活！！`;
+      //   } else {
+      //     this.text = `${this.email}，邮箱已添加，请勿重复操作！！`;
+      //   }
+      //   this.hint = true;
+      //   this.email = '';
+      //   this.loading = false;
+      // });
     }
   }
 };

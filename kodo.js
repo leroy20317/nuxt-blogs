@@ -36,10 +36,41 @@ rd.each(
         // return result;
       }).then(function () {
         console.log(
-          `上传文件至https://cdn.leroy.net.cn/${f.replace(
+          `上传文件至 https://cdn.leroy.net.cn/${f.replace(
             path.join(__dirname, '/.nuxt/dist'),
             folderName
-          )}成功`
+          )} 成功`
+        );
+      });
+    }
+    next();
+  },
+  function (err) {
+    if (err) throw err;
+  }
+);
+
+rd.each(
+  path.join(__dirname, '/static'),
+  function (f, s, next) {
+    putExtra.mimeType = null;
+    if (s.isFile()) {
+      co(function* () {
+        try {
+          const result = yield upload(
+            f.replace(path.join(__dirname, '/static'), `${folderName}/static`),
+            f
+          );
+          return result;
+        } catch (error) {
+          console.log(error);
+        }
+      }).then(function () {
+        console.log(
+          `上传文件至 https://cdn.leroy.net.cn${f.replace(
+            path.join(__dirname, '/static'),
+            `${folderName}/static`
+          )} 成功`
         );
       });
     }

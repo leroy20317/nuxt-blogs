@@ -14,7 +14,7 @@ export default {
   name: 'About',
   async asyncData(context) {
     const { data } = await context.$axios.get(Url.myself);
-    if (data.status === 1) {
+    if (data.status === 'success') {
       return { data: data.body };
     } else {
       return { data: '' };
@@ -39,8 +39,8 @@ export default {
   },
   mounted() {
     // 背景音乐
-    if (this.info.bg.bg_about) {
-      this.music = this.info.bg.bg_about;
+    if (this.info.bg_music.about) {
+      this.music = this.info.bg_music.about;
       this.refresh = false;
       this.$nextTick(() => (this.refresh = true));
     }

@@ -23,7 +23,7 @@
       </template>
 
       <span class="myself" @click="myself">
-        <img :src="$store.state.data.avatar" />
+        <img :src="info.admin.avatar" />
       </span>
     </div>
 
@@ -94,6 +94,9 @@ export default {
     };
   },
   computed: {
+    info() {
+      return this.$store.state.data;
+    },
     // mobile music progress
     dashOffset() {
       return (1 - this.percent) * this.dashArray;

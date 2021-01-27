@@ -8,7 +8,7 @@
     <section>
       <h1 class="title">{{ data.title }}</h1>
       <div class="stuff">
-        <span>{{ data.time.month.cn }}月 {{ data.time.day.on }}, {{ data.time.year }}</span>
+        <span>{{ timeFormat(data.time) }}</span>
         <span>阅读 {{ data.read }}</span>
         <span>字数 {{ data.words }}</span>
         <span>评论 {{ commentTotal }}</span>
@@ -30,6 +30,7 @@
 <script>
 import Comment from '@/components/comment';
 import Url from '~/utils/url';
+import { dateFormat } from '~/utils/util';
 
 export default {
   components: { Comment },
@@ -41,7 +42,7 @@ export default {
     const id = context.params.articleId;
     const { data } = await context.$axios.get(`${Url.article}/${id}`);
 
-    if (data.status === 1) {
+    if (data.status === 'success' && data.body) {
       return { data: data.body };
     } else {
       context.error({ statusCode: 404, message: '页面未找到或无数据' });
@@ -67,11 +68,7 @@ export default {
   },
   head() {
     return {
-      title: `${this.data.title} | ${this.info.web_name}`,
-      meta: [
-        { hid: 'keywords', name: 'keywords', content: this.info.web_seo },
-        { hid: 'description', name: 'description', content: this.data.describe }
-      ]
+      title: `${this.data.title}`
     };
   },
   computed: {
@@ -86,6 +83,10 @@ export default {
     window.addEventListener('scroll', this.handleScroll, true);
   },
   methods: {
+    timeFormat(date) {
+      const dateObject = dateFormat(date);
+      return `${dateObject.month.cn}月 ${dateObject.day.on}, ${dateObject.year}`;
+    },
     liked() {
       this.data.like++;
     },

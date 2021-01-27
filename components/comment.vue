@@ -14,7 +14,7 @@
           v-model="form.content"
           class="textarea"
           placeholder="What do you want to say..."
-          :style='`background: url(${staticHost}image/comment/plbj.png) no-repeat bottom right`'
+          :style="`background: url(${staticHost}image/comment/plbj.png) no-repeat bottom right`"
         ></textarea>
 
         <!-- submit loading -->
@@ -78,17 +78,14 @@
                     <img :src="`${staticHost}image/comment/${item.image}.jpg`" />
                   </div>
                   <div class="name">
-                    <a
-                      >{{ item.name
-                      }}<span v-if="item.admin">{{
-                        $store.state.data.admin_mark || '行人'
-                      }}</span></a
-                    >
+                    <a>
+                      {{ item.name }}
+                      <span v-if="item.admin">{{ info.comment.mark || '行人' }}</span>
+                    </a>
                     <div class="r">
                       <div class="reply" @click="reply(item, 1)">reply</div>
                       <span class="time">
-                        {{ item.time.time }} {{ item.time.month.en }} {{ item.time.day.on }},
-                        {{ item.time.year }}
+                        {{ timeFormat(item.time) }}
                       </span>
                     </div>
                   </div>
@@ -108,14 +105,13 @@
                         <a>
                           {{ items.name }}
                           <span v-if="items.admin">
-                            {{ $store.state.data.admin_mark || '行人' }}
-                          </span></a
-                        >
+                            {{ info.comment.mark || '行人' }}
+                          </span>
+                        </a>
                         <div class="r">
                           <div class="reply" @click="reply(item, 2, items)">reply</div>
                           <span class="time">
-                            {{ items.time.time }} {{ items.time.month.en }} {{ items.time.day.on }},
-                            {{ items.time.day.on }}, {{ items.time.year }}
+                            {{ timeFormat(items.time) }}
                           </span>
                         </div>
                       </div>
@@ -149,6 +145,7 @@
 import Vue from 'vue';
 import PuzzleVerification from '@/components/puzzleVerification';
 import Url from '~/utils/url';
+import { dateFormat } from '~/utils/util';
 
 export default Vue.extend({
   components: {
@@ -180,9 +177,14 @@ export default Vue.extend({
       replyObj: {}
     };
   },
+  computed: {
+    info() {
+      return this.$data.store.data;
+    }
+  },
   mounted() {
     this.$axios.get(`${Url.comment}/${this.id}`).then(res => {
-      if (res.data.status === 1) {
+      if (res.data.status === 'success') {
         this.comment = res.data.body;
         this.$emit('total', this.comment.total);
       }
@@ -226,7 +228,7 @@ export default Vue.extend({
       // loading
       if (this.status === 6) return;
 
-      const data = this.$store.state.data;
+      const info = this.$store.state.data;
       const map = {
         name: () => {
           return {
@@ -239,8 +241,8 @@ export default Vue.extend({
           return {
             code: 1,
             type:
-              (this.form.name === data.email_name && this.form.email !== data.email) ||
-              (this.form.name !== data.email_name && this.form.email === data.email)
+              (this.form.name === info.comment.name && this.form.email !== info.comment.email) ||
+              (this.form.name !== info.comment.name && this.form.email === info.comment.email)
           };
         },
         email: () => {
@@ -297,10 +299,10 @@ export default Vue.extend({
       /**
        * Administrator Mark
        */
-      const data = this.$store.state.data;
-      const email = this.$store.state.data.email_comment;
+      const info = this.$store.state.data;
+      const { email, name } = info.comment;
 
-      if (this.form.email === data.email && this.form.name === data.email_name) {
+      if (this.form.email === email && this.form.name === name) {
         this.form.image = 1;
         this.form.admin = true;
       }
@@ -320,7 +322,7 @@ export default Vue.extend({
       this.$axios
         .post(Url.comment, formData)
         .then(res => {
-          if (res.data.status === 1) {
+          if (res.data.status === 'success') {
             /**
              * To Append Data
              */
@@ -369,6 +371,10 @@ export default Vue.extend({
         opt[i] = opt[i].length === 1 ? opt[i].padStart(2, '0') : opt[i];
       }
       return `${opt.Y}/${opt.M}/${opt.D} ${opt.H}:${opt.m}`;
+    },
+    timeFormat(date) {
+      const dateObject = dateFormat(date);
+      return `${dateObject.time} ${dateObject.month.en} ${dateObject.day.on} ${dateObject.year}`;
     }
   }
 });

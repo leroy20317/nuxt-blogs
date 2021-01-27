@@ -7,7 +7,7 @@
       <template v-else>
         <div v-for="(item, index) in data.data" :key="index" class="item">
           <div class="text" v-html="item.contentHtml"></div>
-          <div class="time">{{ item.time }}</div>
+          <div class="time">{{ timeFormat(item.time) }}</div>
         </div>
         <load-more :loading-type="loadingType" />
       </template>
@@ -17,11 +17,12 @@
 
 <script>
 import Url from '~/utils/url';
+import { dateFormat } from '~/utils/util';
 
 export default {
   async asyncData(context) {
     const { data } = await context.$axios.get(Url.envelope);
-    return { data: data.status === 1 ? data.body : '' };
+    return { data: data.status === 'success' ? data.body : '' };
   },
   data() {
     return {
@@ -32,7 +33,7 @@ export default {
   },
   head() {
     return {
-      title: `一封信 | ${this.info.web_name}`
+      title: `一封信 | ${this.info.web.name}`
     };
   },
   computed: {
@@ -42,8 +43,8 @@ export default {
   },
   mounted() {
     // 背景音乐
-    if (this.info.bg.bg_letter) {
-      this.music = this.info.bg.bg_letter;
+    if (this.info.bg_music.letter) {
+      this.music = this.info.bg_music.letter;
       this.refresh = false;
       this.$nextTick(() => (this.refresh = true));
     }
@@ -61,6 +62,10 @@ export default {
     window.removeEventListener('scroll', this.load);
   },
   methods: {
+    timeFormat(date) {
+      const dateObject = dateFormat(date);
+      return `${dateObject.month.en} ${dateObject.day.en}, ${dateObject.year}`;
+    },
     load() {
       const data = this.$load('envelope');
 

@@ -15,23 +15,18 @@
       </div>
       <div :style="{ backgroundColor: info.cover.color }" class="misk"></div>
       <div class="post">
-        <div class="time">{{ info.cover.date }}</div>
+        <div class="time">{{ timeFormat(info.cover.date) }}</div>
         <div class="title">
           <nuxt-link v-if="info.cover.link" :to="info.cover.link">{{ info.cover.title }}</nuxt-link>
           <span v-else>{{ info.cover.title }}</span>
         </div>
-        <div class="describe">{{ info.cover.describe }}</div>
+        <div class="describe">{{ info.cover.description }}</div>
       </div>
       <!-- menu -->
       <div class="nav">
         <ul class="nav-list">
           <template v-for="(item, index) in navList">
-            <template v-if="item.url === 'subscribe'">
-              <li v-if="$store.state.data.email_subscribe" :key="index">
-                <a @click="toPage(item.url)">{{ item.title }}</a>
-              </li>
-            </template>
-            <li v-else :key="index">
+            <li :key="index">
               <a @click="toPage(item.url)">{{ item.title }}</a>
             </li>
           </template>
@@ -42,7 +37,7 @@
       </div>
     </div>
 
-    <div v-if="Object.keys(articleList.data).length > 0" class="content">
+    <div v-if="articleList.data && articleList.data.length > 0" class="content">
       <div v-for="(item, index) in articleList.data" :key="index" class="post">
         <div class="img-box" @click="article(item.id)">
           <img
@@ -53,7 +48,7 @@
         </div>
         <div class="info">
           <div class="time">
-            {{ item.time.month.cn }}月 {{ item.time.day.on }}, {{ item.time.year }}
+            {{ timeFormat(item.time) }}
           </div>
           <div class="title">
             <a @click="article(item.id)">{{ item.title }}</a>
@@ -77,8 +72,8 @@
       </div>
     </div>
 
-    <div v-if="info.cover.icp_txt" class="foot">
-      <a :href="info.cover.icp_link" target="_blank">{{ info.cover.icp_txt }}</a>
+    <div v-if="info.web.icp" class="foot">
+      <a href="https://beian.miit.gov.cn" target="_blank">{{ info.web.icp }}</a>
     </div>
 
     <back-top v-if="isBack" />
@@ -94,6 +89,7 @@ import { Context } from '@nuxt/types/app';
 import { $axios } from '@/utils/api';
 import Parallax from 'parallax-js';
 import Url from '~/utils/url';
+import { dateFormat } from '~/utils/util';
 
 export default Vue.extend({
   name: 'Index',
@@ -119,7 +115,11 @@ export default Vue.extend({
       return;
     }
     const { data } = await $axios.get(Url.article);
-    return { articleList: data.status === 1 ? data.body : {} };
+    let article = {};
+    if (data.status === 'success') {
+      article = data.body;
+    }
+    return { articleList: article };
   },
   data() {
     return {
@@ -142,10 +142,6 @@ export default Vue.extend({
           url: 'envelope'
         },
         {
-          title: 'Subscribe',
-          url: 'subscribe'
-        },
-        {
           title: 'About',
           url: 'about'
         }
@@ -159,15 +155,6 @@ export default Vue.extend({
 
       image: null,
       windowChange: () => {}
-    };
-  },
-  head() {
-    return {
-      title: this.info.web_name,
-      meta: [
-        { hid: 'keywords', name: 'keywords', content: this.info.web_seo },
-        { hid: 'description', name: 'description', content: this.info.web_describe }
-      ]
     };
   },
   computed: {
@@ -268,7 +255,7 @@ export default Vue.extend({
         })
         .then(res => {
           const result = res.data.body;
-          if (res.data.status === 1) {
+          if (res.data.status === 'success') {
             setTimeout(() => {
               this.articleList.data = this.articleList.data.concat(result.data);
 
@@ -304,6 +291,10 @@ export default Vue.extend({
     article(id: number) {
       // console.log('this.$router', this.$router);
       this.$router.push(`/${id}`);
+    },
+    timeFormat(date) {
+      const dateObject = dateFormat(date);
+      return `${dateObject.month.cn}月 ${dateObject.day.on}, ${dateObject.year}`;
     }
   }
 });

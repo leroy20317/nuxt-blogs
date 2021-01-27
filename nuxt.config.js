@@ -18,7 +18,14 @@ export default {
         content:
           'Good morning, and in case I don’t see you, good afternoon, good evening, and good night...'
       },
-      { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }
+      { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
+      { property: 'og:title', content: 'Leroy' },
+      {
+        property: 'og:description',
+        content:
+          'Good morning, and in case I don’t see you, good afternoon, good evening, and good night...'
+      },
+      { property: 'og:image', content: 'https://cdn.leroy.net.cn/images/icon.png' }
     ],
     link: [
       {
@@ -35,8 +42,8 @@ export default {
     host: isProd ? '0.0.0.0' : 'local.leroy.net.cn'
   },
   env: {
-    // baseUrl: `${isProd ? 'https://api.leroy.net.cn' : 'http://localhost:5001'}/web`
-    baseUrl: 'https://api.leroy.net.cn/web'
+    baseUrl: `${isProd ? 'https://api.leroy.net.cn/web' : 'http://localhost:5001'}/web`
+    // baseUrl: 'https://api.leroy.net.cn/web'
   },
 
   loading: '~/components/loadingTab.vue',

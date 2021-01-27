@@ -1,6 +1,9 @@
 <template>
   <div class="cover-loading">
-    <span></span>
+    <div class="spinner">
+      <div class="double-bounce1"></div>
+      <div class="double-bounce2"></div>
+    </div>
   </div>
 </template>
 
@@ -17,70 +20,38 @@
   align-items: center;
   justify-content: center;
 
-  span {
-    width: 15px;
-    height: 15px;
-    display: block;
-    margin-top: -20px;
+  .spinner {
+    width: 40px;
+    height: 40px;
+
+    position: relative;
+  }
+
+  .double-bounce1,
+  .double-bounce2 {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    background: #808080;
-    animation: Loading 2s both infinite;
+    background-color: #38f;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    animation: bounce 2s infinite ease-in-out;
+  }
+
+  .double-bounce2 {
+    animation-delay: -1s;
   }
 }
 
-@keyframes Loading {
-  5% {
-    transform: scale(1);
-  }
-  10% {
-    transform: scale(0.95);
-  }
-  15% {
-    transform: scale(0.9);
-  }
-  20% {
-    transform: scale(0.8);
-  }
-  25% {
-    transform: scale(0.7);
-  }
-  30% {
-    transform: scale(0.6);
-  }
-  35% {
-    transform: scale(0.5);
-  }
-  40% {
-    transform: scale(0.4);
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(0);
   }
   50% {
-    transform: scale(0.3);
-  }
-  60% {
-    transform: scale(0.4);
-  }
-  65% {
-    transform: scale(0.5);
-  }
-  70% {
-    transform: scale(0.6);
-  }
-  75% {
-    transform: scale(0.7);
-  }
-  80% {
-    transform: scale(0.8);
-  }
-  85% {
-    transform: scale(0.85);
-  }
-  90% {
-    transform: scale(0.9);
-  }
-  95% {
-    transform: scale(0.95);
-  }
-  100% {
     transform: scale(1);
   }
 }

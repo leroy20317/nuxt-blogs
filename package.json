@@ -7,7 +7,6 @@
     "build": "nuxt-ts build",
     "start": "nuxt-ts start",
     "publish": "nuxt-ts build && node kodo.js",
-    "kodo-static": "node kodo-static.js",
     "pm2": "pm2 delete nuxt-blogs && pm2 start npm --no-pmx --name nuxt-blogs -- start",
     "generate": "nuxt-ts generate",
     "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
