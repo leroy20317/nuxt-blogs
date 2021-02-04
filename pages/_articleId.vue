@@ -23,7 +23,7 @@
     </section>
 
     <!-- Comment -->
-    <comment :id="data.id" :title="data.title" @total="totalComment" />
+    <comment :article-id="data._id" :title="data.title" :info='info' @total="totalComment" />
   </div>
 </template>
 
@@ -36,7 +36,7 @@ export default {
   components: { Comment },
   // error page
   validate({ params }) {
-    return /^\d+$/.test(params.articleId);
+    return /^[A-z0-9]+$/.test(params.articleId);
   },
   async asyncData(context) {
     const id = context.params.articleId;

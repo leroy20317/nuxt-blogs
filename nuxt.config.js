@@ -41,10 +41,6 @@ export default {
     port: 5000,
     host: isProd ? '0.0.0.0' : 'local.leroy.net.cn'
   },
-  env: {
-    baseUrl: `${isProd ? 'https://api.leroy.net.cn' : 'http://localhost:5001'}/web`
-    // baseUrl: 'https://api.leroy.net.cn/web'
-  },
 
   loading: '~/components/loadingTab.vue',
 

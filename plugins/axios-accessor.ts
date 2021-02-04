@@ -21,7 +21,7 @@ const accessor: Plugin = ({ error, app: { $axios } }) => {
   $axios.interceptors.response.use(
     (response: AxiosResponse<any>) => {
       const res = response;
-      if (res.status === 200) {
+      if (res.status >= 200 && res.status < 300) {
         return Promise.resolve(res);
       } else {
         return Promise.reject(res);

@@ -13,7 +13,7 @@ import Url from '~/utils/url';
 export default {
   name: 'About',
   async asyncData(context) {
-    const { data } = await context.$axios.get(Url.myself);
+    const { data } = await context.$axios.get(Url.about);
     if (data.status === 'success') {
       return { data: data.body };
     } else {

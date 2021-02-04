@@ -49,11 +49,11 @@ export default {
       this.$nextTick(() => (this.refresh = true));
     }
 
-    if (this.data.totalPage > 1) {
+    if (this.data.total > 1) {
       window.addEventListener('scroll', this.load);
     }
 
-    if (this.data.page === this.data.totalPage) {
+    if (this.data.page === this.data.total) {
       this.loadingType = 'nomore';
     }
   },
@@ -80,7 +80,7 @@ export default {
               const result = res.body;
               this.data.data = this.data.data.concat(result.data);
 
-              if (result.page === result.totalPage) {
+              if (result.page === result.total) {
                 this.loadingType = 'nomore';
                 window.removeEventListener('scroll', this.load);
               } else {

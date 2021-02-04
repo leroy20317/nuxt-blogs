@@ -13,11 +13,11 @@
             <ul class="day-list">
               <li v-for="(child_val, child_key, child_idx) in vals" :key="child_idx">
                 <div class="item-l">
-                  <div class="img" @click="viewArticle(child_val.id)">
+                  <div class="img" @click="viewArticle(child_val._id)">
                     <img :src="child_val.image.url || `${staticHost}image/other/default.jpg`" />
                   </div>
                   <div class="tit">
-                    <span @click="viewArticle(child_val.id)">{{ child_val.title }}</span>
+                    <span @click="viewArticle(child_val._id)">{{ child_val.title }}</span>
                     <span>{{ child_val.like }} LIKE / {{ child_val.read }} READ</span>
                   </div>
                 </div>
@@ -39,7 +39,7 @@ import { dateFormat } from '~/utils/util';
 export default {
   async asyncData(context) {
     const { data } = await context.$axios.get(Url.article, {
-      params: { from: 'list' }
+      params: { mood: 1 }
     });
     console.log('data', data);
     return { data: data.status === 'success' ? data.body : {} };
@@ -76,7 +76,7 @@ export default {
       window.addEventListener('scroll', this.load);
     }
 
-    if (this.data.page === this.data.totalPage) {
+    if (this.data.page === this.data.total) {
       this.loadingType = 'nomore';
     }
   },
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     load() {
-      const data = this.$load('article', { params: { from: 'list' } });
+      const data = this.$load('article', { params: { mood: 1 } });
 
       if (typeof data === 'object') {
         this.loadingType = 'loading';
@@ -112,7 +112,7 @@ export default {
                 }
               });
               // 最后一页
-              if (res.body.page === res.body.totalPage) {
+              if (res.body.page === res.body.total) {
                 this.loadingType = 'nomore';
                 window.removeEventListener('scroll', this.load);
               } else {

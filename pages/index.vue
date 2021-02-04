@@ -39,7 +39,7 @@
 
     <div v-if="articleList.data && articleList.data.length > 0" class="content">
       <div v-for="(item, index) in articleList.data" :key="index" class="post">
-        <div class="img-box" @click="article(item.id)">
+        <div class="img-box" @click="article(item._id)">
           <img
             v-lazy="item.image.url"
             :alt="item.image.name"
@@ -51,7 +51,7 @@
             {{ timeFormat(item.time) }}
           </div>
           <div class="title">
-            <a @click="article(item.id)">{{ item.title }}</a>
+            <a @click="article(item._id)">{{ item.title }}</a>
           </div>
           <div class="describe">{{ item.describe }}</div>
           <div class="stuff">
@@ -115,11 +115,7 @@ export default Vue.extend({
       return;
     }
     const { data } = await $axios.get(Url.article);
-    let article = {};
-    if (data.status === 'success') {
-      article = data.body;
-    }
-    return { articleList: article };
+    return { articleList: data.status === 'success' ? data.body : {} };
   },
   data() {
     return {
@@ -187,7 +183,7 @@ export default Vue.extend({
     });
 
     console.log('parallaxInstance', parallaxInstance);
-    if (this.articleList.page === this.articleList.totalPage) {
+    if (this.articleList.page === this.articleList.total) {
       this.loadingType = 'nomore';
     }
   },
@@ -261,7 +257,7 @@ export default Vue.extend({
 
               this.$setScroll('.bottom-loading', 'index');
 
-              this.loadingType = result.page === result.totalPage ? 'nomore' : 'more';
+              this.loadingType = result.page === result.total ? 'nomore' : 'more';
             }, 1000);
           } else {
             this.loadingType = 'more';
@@ -288,7 +284,7 @@ export default Vue.extend({
     on(e: Event) {
       e.preventDefault();
     },
-    article(id: number) {
+    article(id: string) {
       // console.log('this.$router', this.$router);
       this.$router.push(`/${id}`);
     },

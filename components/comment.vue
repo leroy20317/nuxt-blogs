@@ -68,8 +68,8 @@
             <!-- Comment List -->
             <div
               v-for="item in comment.data"
-              :key="item.id"
-              :data-id="item.id"
+              :key="item._id"
+              :data-id="item._id"
               class="comment-item"
             >
               <div class="comment-item-box">
@@ -96,30 +96,36 @@
               <!-- Reply to list -->
               <div v-if="item.child.length > 0" class="comments">
                 <transition-group name="comment-child">
-                  <div v-for="items in item.child" :key="items.id" :data-id="items.id" class="item">
+                  <div
+                    v-for="child in item.child"
+                    :key="child._id"
+                    :data-id="child._id"
+                    class="item"
+                  >
                     <div class="head">
                       <div class="img">
                         <img :src="`${staticHost}image/comment/${item.image}.jpg`" />
                       </div>
                       <div class="name">
                         <a>
-                          {{ items.name }}
-                          <span v-if="items.admin">
+                          {{ child.name }}
+                          <span v-if="child.admin">
                             {{ info.comment.mark || '行人' }}
                           </span>
                         </a>
                         <div class="r">
-                          <div class="reply" @click="reply(item, 2, items)">reply</div>
+                          <div class="reply" @click="reply(item, 2, child)">reply</div>
                           <span class="time">
-                            {{ timeFormat(items.time) }}
+                            {{ timeFormat(child.time) }}
                           </span>
                         </div>
                       </div>
                     </div>
                     <div class="comments-content">
-                      <span v-if="items.type === 3" class="reply-name">
-                        @{{ items.reply_name }} </span
-                      >{{ items.content }}
+                      <span v-if="child.type === 3" class="reply-name">
+                        @{{ child.reply_name }}
+                      </span>
+                      {{ child.content }}
                     </div>
                   </div>
                 </transition-group>
@@ -151,7 +157,7 @@ export default Vue.extend({
   components: {
     PuzzleVerification
   },
-  props: ['id', 'title'],
+  props: ['articleId', 'title', 'info'],
   data() {
     return {
       staticHost: Url.staticHost,
@@ -177,13 +183,8 @@ export default Vue.extend({
       replyObj: {}
     };
   },
-  computed: {
-    info() {
-      return this.$data.store.data;
-    }
-  },
   mounted() {
-    this.$axios.get(`${Url.comment}/${this.id}`).then(res => {
+    this.$axios.get(`${Url.comment}`, { params: { article_id: this.articleId } }).then(res => {
       if (res.data.status === 'success') {
         this.comment = res.data.body;
         this.$emit('total', this.comment.total);
@@ -212,15 +213,14 @@ export default Vue.extend({
       this.isReply = false;
     },
     // Reply Mode
-    reply(item, type, items) {
+    reply(item, type, child) {
       this.$setScroll('.comment', 'comment');
 
       this.isReply = true;
       this.replyObj = {
-        parent_id: item.id,
-        type: type === 1 ? 2 : 3,
-        reply_name: type === 1 ? item.name : items.name,
-        reply_email: type === 1 ? item.email : items.email
+        parent_id: item.parent_id || item._id,
+        reply_name: type === 1 ? item.name : child.name,
+        reply_email: type === 1 ? item.email : child.email
       };
     },
     // Verification
@@ -228,7 +228,7 @@ export default Vue.extend({
       // loading
       if (this.status === 6) return;
 
-      const info = this.$store.state.data;
+      const info = this.info;
       const map = {
         name: () => {
           return {
@@ -290,49 +290,30 @@ export default Vue.extend({
       this.form = {
         image,
         name: this.form.name.trim(),
-        time: this.dateFormat(),
         email: this.form.email.trim(),
-        content: this.form.content.trim().replace(/<script.*?>.*?<\/script>/gi, ''),
-        topic_id: this.id
+        content: this.form.content.trim().replace(/<script.*?>.*?<\/script>/gi, '')
       };
 
-      /**
-       * Administrator Mark
-       */
-      const info = this.$store.state.data;
-      const { email, name } = info.comment;
+      const data = Object.assign({}, this.form, this.isReply ? this.replyObj : {});
+      console.log(this.isReply ? '回复' : '评论', data);
 
-      if (this.form.email === email && this.form.name === name) {
-        this.form.image = 1;
-        this.form.admin = true;
-      }
-
-      // Email notification information
-      const formData = {
-        title: this.title,
-        url: window.location.href,
-        type: this.isReply ? 1 : 2,
-        data: Object.assign({}, this.replyObj, this.form),
-        is_email: email
-      };
-
-      console.log(formData);
-
-      // return;
-      this.$axios
-        .post(Url.comment, formData)
+      this.$axios(
+        this.isReply
+          ? `${Url.comment}/replay/${data.parent_id}`
+          : `${Url.comment}?article_id=${this.articleId}`,
+        {
+          method: 'post',
+          data
+        }
+      )
         .then(res => {
           if (res.data.status === 'success') {
-            /**
-             * To Append Data
-             */
             const data = res.data.body;
 
-            if (data.type === 1) {
-              this.comment.data.unshift(data);
+            if (this.isReply) {
+              this.comment.data.find(ele => ele._id === data.parent_id).child.push(data);
             } else {
-              const id = data.parent_id;
-              this.comment.data.filter(i => i.id === id).forEach(item => item.child.push(data));
+              this.comment.data.unshift({ ...data, child: [] });
             }
 
             // Comment total +1
@@ -353,24 +334,10 @@ export default Vue.extend({
             this.status = 4;
           }
         })
-        .catch(() => {
+        .catch(err => {
+          console.log('err', err);
           this.status = 4;
         });
-    },
-    // FormatTime
-    dateFormat() {
-      const date = new Date();
-      const opt = {
-        Y: date.getFullYear().toString(),
-        M: (date.getMonth() + 1).toString(),
-        D: date.getDate().toString(),
-        H: date.getHours().toString(),
-        m: date.getMinutes().toString()
-      };
-      for (const i in opt) {
-        opt[i] = opt[i].length === 1 ? opt[i].padStart(2, '0') : opt[i];
-      }
-      return `${opt.Y}/${opt.M}/${opt.D} ${opt.H}:${opt.m}`;
     },
     timeFormat(date) {
       const dateObject = dateFormat(date);
@@ -643,9 +610,8 @@ export default Vue.extend({
           padding: 0;
           line-height: 22px;
           margin: 0 0 0 50px;
-          white-space: pre-wrap;
 
-          span {
+          span:not(.reply-name) {
             color: #fff;
             background: #a9cff3;
             display: inline-block;
@@ -655,6 +621,10 @@ export default Vue.extend({
             border-radius: 10px;
             margin-right: 4px;
             font-size: 13px;
+          }
+          .reply-name {
+            color: #a9cff3;
+            font-weight: 700;
           }
         }
       }
