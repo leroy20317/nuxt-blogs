@@ -115,6 +115,7 @@ export default Vue.extend({
       return;
     }
     const { data } = await $axios.get(Url.article);
+    console.log('data', data);
     return { articleList: data.status === 'success' ? data.body : {} };
   },
   data() {
@@ -183,7 +184,7 @@ export default Vue.extend({
     });
 
     console.log('parallaxInstance', parallaxInstance);
-    if (this.articleList.page === this.articleList.total) {
+    if (this.articleList.page >= this.articleList.totalPage) {
       this.loadingType = 'nomore';
     }
   },
@@ -257,7 +258,7 @@ export default Vue.extend({
 
               this.$setScroll('.bottom-loading', 'index');
 
-              this.loadingType = result.page === result.total ? 'nomore' : 'more';
+              this.loadingType = result.page === result.totalPage ? 'nomore' : 'more';
             }, 1000);
           } else {
             this.loadingType = 'more';

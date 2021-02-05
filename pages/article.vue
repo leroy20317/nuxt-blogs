@@ -76,7 +76,7 @@ export default {
       window.addEventListener('scroll', this.load);
     }
 
-    if (this.data.page === this.data.total) {
+    if (this.data.page >= this.data.totalPage) {
       this.loadingType = 'nomore';
     }
   },
@@ -112,7 +112,7 @@ export default {
                 }
               });
               // 最后一页
-              if (res.body.page === res.body.total) {
+              if (res.body.page >= res.body.totalPage) {
                 this.loadingType = 'nomore';
                 window.removeEventListener('scroll', this.load);
               } else {

@@ -23,7 +23,7 @@
     </section>
 
     <!-- Comment -->
-    <comment :article-id="data._id" :title="data.title" :info='info' @total="totalComment" />
+    <comment :article-id="data._id" :title="data.title" :info="info" @total="totalComment" />
   </div>
 </template>
 

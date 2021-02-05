@@ -76,11 +76,11 @@ export default {
       data &&
         data
           .then(res => {
-            if (res.status === 1) {
+            if (res.status === 'success') {
               const result = res.body;
               this.data.data = this.data.data.concat(result.data);
 
-              if (result.page === result.total) {
+              if (result.page >= result.totalPage) {
                 this.loadingType = 'nomore';
                 window.removeEventListener('scroll', this.load);
               } else {
