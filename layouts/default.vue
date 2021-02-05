@@ -13,6 +13,15 @@ export default {
       includeArr: ['index', 'about'] // 组件的 name
     };
   },
+  head() {
+    return {
+      title: this.info.web.name,
+      meta: [
+        { hid: 'keywords', name: 'keywords', content: this.info.web.seo },
+        { hid: 'description', name: 'description', content: this.info.web.description }
+      ]
+    };
+  },
   computed: {
     info() {
       const data = this.$store.state.data;
@@ -25,15 +34,6 @@ export default {
         }
       };
     }
-  },
-  head() {
-    return {
-      title: this.info.web.name,
-      meta: [
-        { hid: 'keywords', name: 'keywords', content: this.info.web.seo },
-        { hid: 'description', name: 'description', content: this.info.web.description }
-      ]
-    };
   }
 };
 </script>

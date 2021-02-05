@@ -157,7 +157,7 @@ export default Vue.extend({
   components: {
     PuzzleVerification
   },
-  props: ['articleId', 'title', 'info'],
+  props: ['title', 'info', 'articleId'],
   data() {
     return {
       staticHost: Url.staticHost,
