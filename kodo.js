@@ -7,8 +7,9 @@ const accessKey = 'yH-26a9NAohR_QegJR1uGU5I5Dw595l6n_tXHwPB';
 const secretKey = 'EcLCXW7hZiaY48qbFP1yU9okc17a12mmQqF9Ipth';
 
 const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
-const config = new qiniu.conf.Config();
-config.zone = qiniu.zone.Zone_z2; // 华南
+const config = new qiniu.conf.Config({
+  zone: qiniu.zone.Zone_z2 // 华南
+});
 
 const options = { scope: 'leroy20317', expires: 7200 };
 const putPolicy = new qiniu.rs.PutPolicy(options);
