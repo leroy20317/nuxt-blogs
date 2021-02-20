@@ -112,6 +112,9 @@ export default {
 
     this.fnScroll = this.$throttle(this.handleScroll, 100);
     window.addEventListener('scroll', this.fnScroll);
+
+    // 播放音乐
+    setTimeout(this.changeMusic, 1000);
   },
   methods: {
     // Scroll Change
@@ -149,20 +152,29 @@ export default {
     },
     changeMusic() {
       const music = document.getElementById('music');
-      this.isStore = !this.isStore;
-      if (this.isStore) {
-        music.play();
-        this.timer = setInterval(() => {
-          const n = (100 * (music.currentTime / music.duration)).toFixed(2);
-          const ns = 1 * (music.currentTime / music.duration);
-          // Loop
-          if (n >= 100) clearInterval(this.timer);
-          this.changeProgress = n + '%';
-          this.percent = ns;
-        }, 50);
+      if (!this.isStore) {
+        // 播放
+        music
+          .play()
+          .then(() => {
+            this.isStore = true;
+            this.timer = setInterval(() => {
+              const n = (100 * (music.currentTime / music.duration)).toFixed(2);
+              const ns = 1 * (music.currentTime / music.duration);
+              // Loop
+              if (n >= 100) clearInterval(this.timer);
+              this.changeProgress = n + '%';
+              this.percent = ns;
+            }, 50);
+          })
+          .catch(() => {
+            console.log('该浏览器暂不支持！');
+          });
       } else {
+        // 暂停
         music.pause();
-        clearInterval(this.timer);
+        this.isStore = false;
+        if (this.timer) clearInterval(this.timer);
       }
     },
     toIndex() {

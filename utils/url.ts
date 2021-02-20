@@ -1,6 +1,7 @@
 const isProd = process.env.NODE_ENV === 'production';
 const isServer = !process.browser;
 let domain = isProd ? 'https://api.leroy.net.cn/web' : 'http://localhost:5001/web';
+// let domain = 'https://api.leroy.net.cn/web';
 if (isServer) {
   domain = domain.replace(/^https/i, 'http');
 }
